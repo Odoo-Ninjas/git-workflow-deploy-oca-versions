@@ -11,49 +11,8 @@ on:
 permissions: write-all
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        python-version: "3.10"
-        fetch-depth: 0
-
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-
-    - name: setup merge
-      run: |
-        set -x
-        git config --global user.email 'github-action@github.com'
-        git config --global user.name 'github-action@github.com'
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-        git fetch
-
-    - name: rebase main on all versions; if fails make issue
-      run: |
-        set -x
-        git checkout main
-        git log -n1
-        git pull
-
-        for branch in ${{ inputs.branches }}; do
-          git checkout "$branch" -f
-          git pull
-          git log -n1
-          if $(git rebase main); then
-            git push -f
-          else
-            git rebase --abort
-
-            cat .github/workflows/rebase.txt | gh issue create \
-              --title "Main branch was updated - needs to deploy the changes to: ${branch}" \
-              -F -
-          fi
-        done
-      env:
-        GH_TOKEN: ${{ github.token }}
+  call-workflow-passing-data:
+    uses: Odoo-Ninjas/git-workflows/.github/workflows/deploy_to_subversions.yml@main
+    with:
+      branches: "11.0 13.0 14.0 15.0 16.0"
+    secrets: inherit
