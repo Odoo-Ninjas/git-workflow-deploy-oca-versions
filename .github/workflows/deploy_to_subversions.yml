@@ -41,7 +41,7 @@ jobs:
         git log -n1
         git pull
 
-        for branch in $BRANCHES; do
+        for branch in ${{ inputs.branches }}; do
           git checkout "$branch" -f
           git pull
           git log -n1
