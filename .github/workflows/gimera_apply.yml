@@ -7,6 +7,9 @@ on:
       params:
         required: false
         type: string
+      branches:
+        required: false
+        type: string
 
 permissions: write-all
 
@@ -37,17 +40,15 @@ jobs:
 
     - name: setup git
       run: |
-        set -x
         git config --global user.email 'github-action@github.com'
         git config --global user.name 'github-action@github.com'
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
 
     - name: rebase main on all versions; if fails make issue
       run: |
-        pipx run gimera apply -I ${{ inputs.params }}
-      env:
-        GH_TOKEN: ${{ github.token }}
-
-    - name: push if changed
-      run: |
-        git push
+        for branch in "${{ inputs.branches }}"; do
+          git checkout "$branch"
+          git pull
+          pipx run gimera apply -I ${{ inputs.params }}
+          git push
+        done
