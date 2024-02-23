@@ -33,10 +33,11 @@ jobs:
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
         git fetch
 
-    - name: rebase main on all versions; if fails make issue
+    - name: rebase specified branch to specified versions; if fails make issue
       run: |
+        SRCBRANCH="${{ inputs.source_branch }}"
         set -x
-        git checkout main
+        git checkout "$SRCBRANCH"
         git log -n1
         git pull
 
@@ -44,13 +45,13 @@ jobs:
           git checkout "$branch" -f
           git pull
           git log -n1
-          if $(git rebase main); then
+          if $(git rebase "$BRANCH"); then
             git push -f
           else
             git rebase --abort
 
             cat .github/workflows/rebase.txt | gh issue create \
-              --title "Main branch was updated - needs to deploy the changes to: ${branch}" \
+              --title "$SRCBRANCH branch was updated - needs to deploy the changes to: ${branch}" \
               -F -
           fi
         done
