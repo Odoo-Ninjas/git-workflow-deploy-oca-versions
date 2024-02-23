@@ -51,7 +51,7 @@ jobs:
           if $(git rebase "$BRANCH"); then
             git push -f
           else
-            git rebase --abort
+            git rebase --abort || true
 
             cat .github/workflows/rebase.txt | gh issue create \
               --title "$SRCBRANCH branch was updated - needs to deploy the changes to: ${branch}" \
