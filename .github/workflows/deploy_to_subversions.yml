@@ -40,12 +40,12 @@ jobs:
 
         for branch in ${{ inputs.branches }}; do
           python3 <<END
-import os
-branch = os.environ['branch']
-dest, source = branch.split(":")
-with open("/tmp/vars", "w") as f:
-  f.write(f"export DEST="{DEST}\n")
-  f.write(f"export SOURCE="{SOURCE}\n")
+        import os
+        branch = os.environ['branch']
+        dest, source = branch.split(":")
+        with open("/tmp/vars", "w") as f:
+          f.write(f"export DEST="{DEST}\n")
+          f.write(f"export SOURCE="{SOURCE}\n")
         END
           source /tmp/vars
 
