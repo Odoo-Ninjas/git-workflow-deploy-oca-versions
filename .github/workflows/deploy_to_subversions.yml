@@ -53,7 +53,7 @@ jobs:
           source /tmp/vars1
           source /tmp/vars2
 
-          git checkout "$SRCBRANCH"
+          git checkout "$SOURCE"
           git log -n1
           git pull
 
