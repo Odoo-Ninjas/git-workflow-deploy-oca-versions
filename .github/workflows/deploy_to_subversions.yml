@@ -39,9 +39,11 @@ jobs:
         set -x
 
         for branch in ${{ inputs.branches }}; do
+          echo "$branch" > /tmp/input1
           python3 <<END
         import os
-        branch = os.environ['branch']
+        with open("/tmp/input1", "r") as f:
+          branch = f.read().strip()
         dest, source = branch.split(":")
         with open("/tmp/vars1", "w") as f:
           f.write(f"export DEST='{DEST}'")
