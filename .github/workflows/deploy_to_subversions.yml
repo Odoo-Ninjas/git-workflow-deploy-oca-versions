@@ -48,7 +48,7 @@ jobs:
           git checkout "$branch" -f
           git pull
           git log -n1
-          if $(git rebase "$BRANCH"); then
+          if $(git rebase "$SRCBRANCH"); then
             git push -f
           else
             git rebase --abort || true
