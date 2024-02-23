@@ -37,9 +37,6 @@ jobs:
       run: |
         SRCBRANCH="${{ inputs.source_branch }}"
         set -x
-        git checkout "$SRCBRANCH"
-        git log -n1
-        git pull
 
         for branch in ${{ inputs.branches }}; do
           eval "$(python3 - <<END
@@ -51,6 +48,11 @@ jobs:
 
           END
           )"
+
+          git checkout "$SRCBRANCH"
+          git log -n1
+          git pull
+
           git checkout "$DEST" -f
           git pull
           git log -n1
