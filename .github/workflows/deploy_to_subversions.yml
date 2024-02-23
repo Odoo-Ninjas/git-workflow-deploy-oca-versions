@@ -46,7 +46,7 @@ jobs:
           with open("/tmp/vars") as f:
             f.write(f"export DEST="{DEST}\n")
             f.write(f"export SOURCE="{SOURCE}\n")
-          END
+END
           source /tmp/vars
 
           git checkout "$SRCBRANCH"
