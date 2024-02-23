@@ -43,11 +43,13 @@ jobs:
         import os
         branch = os.environ['branch']
         dest, source = branch.split(":")
-        with open("/tmp/vars", "w") as f:
-          f.write(f"export DEST="{DEST}\\n")
-          f.write(f"export SOURCE="{SOURCE}\\n")
+        with open("/tmp/vars1", "w") as f:
+          f.write(f"export DEST="{DEST}")
+        with open("/tmp/vars2", "w") as f:
+          f.write(f"export SOURCE="{SOURCE}")
         END
-          source /tmp/vars
+          source /tmp/vars1
+          source /tmp/vars2
 
           git checkout "$SRCBRANCH"
           git log -n1
