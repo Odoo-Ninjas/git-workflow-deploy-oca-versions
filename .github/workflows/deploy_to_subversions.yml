@@ -44,9 +44,9 @@ jobs:
         branch = os.environ['branch']
         dest, source = branch.split(":")
         with open("/tmp/vars1", "w") as f:
-          f.write(f"export DEST="{DEST}")
+          f.write(f"export DEST='{DEST}'")
         with open("/tmp/vars2", "w") as f:
-          f.write(f"export SOURCE="{SOURCE}")
+          f.write(f"export SOURCE='{SOURCE}'")
         END
           source /tmp/vars1
           source /tmp/vars2
