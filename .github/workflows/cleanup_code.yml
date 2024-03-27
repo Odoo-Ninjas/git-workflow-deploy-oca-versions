@@ -1,0 +1,54 @@
+# https://docs.github.com/en/actions/using-workflows/reusing-workflows
+name: Deploy fixes to other versions with rebase main
+
+on:
+  workflow_call:
+    inputs:
+      branches:
+        required: true
+        type: string
+
+permissions: write-all
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: setup merge
+        run: |
+          set -x
+          git config --global user.email 'github-action@github.com'
+          git config --global user.name 'github-action@github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git fetch
+
+      - name: remove breakpoint() instructions
+        run:  |
+          find . -type f -name "*.py" -exec sed -i '/breakpoint()/d' {} +
+
+      - uses: psf/black@stable
+
+      - name: if dirty files, commit them again (careful with recursion)
+        run:  |
+          set -e
+          changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
+          git config --global user.email "${username}"
+          git config --global user.name "${username}"
+          if [[ "$changes" != "0" ]]; then
+            git add .
+            git commit -am 'code cleanup'
+            git push
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
