@@ -11,17 +11,8 @@ on:
 
 permissions: write-all
 
-
-
-
-
-
-
-
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -76,7 +67,7 @@ jobs:
           EOF
 
       - name: if dirty files, commit them again (careful with recursion)
-        run:  |
+        run: |
           set -e
           changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
           git config --global user.email "${username}"
