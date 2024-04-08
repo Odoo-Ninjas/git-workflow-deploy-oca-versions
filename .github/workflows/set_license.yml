@@ -54,7 +54,7 @@ jobs:
               gotonext = False
               for test in exceptions:
                   if test in str(file):
-                  gotonext = True
+                      gotonext = True
               if gotonext:
                   continue
               if not any(x in str(file) for x in inc):
