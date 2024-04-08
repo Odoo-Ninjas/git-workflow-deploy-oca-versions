@@ -35,6 +35,7 @@ jobs:
 
       - name: set license
         run: |
+          pip install pip --upgrade
           pip install git+https://github.com/psf/black
           ls -lhtra
           python3 -c <EOF
