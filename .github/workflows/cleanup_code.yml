@@ -1,5 +1,5 @@
 # https://docs.github.com/en/actions/using-workflows/reusing-workflows
-name: Deploy fixes to other versions with rebase main
+name: clean up code - remove breakpoints, blacking
 
 on:
   workflow_call:
