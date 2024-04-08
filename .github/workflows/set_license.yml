@@ -37,7 +37,7 @@ jobs:
         run: |
           pip install pip --upgrade
           pip install git+https://github.com/psf/black
-          ls -lhtra
+          find .github
           python3 -c <EOF
           import subprocess
           from pathlib import Path
