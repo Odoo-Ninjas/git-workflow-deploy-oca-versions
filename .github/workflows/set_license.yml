@@ -37,8 +37,9 @@ jobs:
         run: |
           pip install pip --upgrade
           pip install git+https://github.com/psf/black
-          find .github
-          python3 -c <EOF
+      - name: set license python
+        shell: python
+        run: |
           import subprocess
           from pathlib import Path
 
@@ -66,7 +67,6 @@ jobs:
                       content = copyright + "\n" + content
               file.write_text(content)
               subprocess.call(f"black '{file}'", shell=True)
-          EOF
 
       - name: if dirty files, commit them again (careful with recursion)
         run: |
