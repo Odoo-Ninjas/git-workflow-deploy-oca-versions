@@ -51,11 +51,14 @@ jobs:
 
           for file in Path(".").rglob("*.py"):
               content = file.read_text()
+              gotonext = False
               for test in exceptions:
                   if test in str(file):
-                      continue
+                  gotonext = True
+              if gotonext:
+                  continue
               if not any(x in str(file) for x in inc):
-                continue
+                  continue
 
               if file.name == "__manifest__.py":
                   content = eval(content)
