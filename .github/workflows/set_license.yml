@@ -1,5 +1,5 @@
 # https://docs.github.com/en/actions/using-workflows/reusing-workflows
-name: Deploy fixes to other versions with rebase main
+name: Apply zebroo license
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
