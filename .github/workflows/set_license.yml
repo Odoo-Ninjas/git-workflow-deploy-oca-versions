@@ -36,6 +36,7 @@ jobs:
       - name: set license
         run: |
           pip install git+https://github.com/psf/black
+          ls -lhtra
           python3 -c <EOF
           import subprocess
           from pathlib import Path
