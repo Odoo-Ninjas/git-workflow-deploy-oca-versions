@@ -8,7 +8,7 @@ on:
       exceptions:
         required: false
         type: string
-      src_patterns:
+      src:
         required: true
         type: string
 
@@ -47,7 +47,7 @@ jobs:
           copyright = "# Part of Zebroo GmbH. See LICENSE file for full copyright and licensing details (www.zebroo.de/license)."
 
           exceptions = list(map(lambda x: x.strip(), '${{ inputs.exceptions }}'.split(",")))
-          inc = list(map(lambda x: x.strip(), "${{ inputs.src_patterns }}".split(",")))
+          inc = list(map(lambda x: x.strip(), "${{ inputs.src}}".split(",")))
 
           for file in Path(".").rglob("*.py"):
               content = file.read_text()
