@@ -8,6 +8,9 @@ on:
       exceptions:
         required: false
         type: string
+      src_patterns:
+        required: true
+        type: string
 
 permissions: write-all
 
@@ -25,13 +28,10 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: setup merge
-        run: |
-          set -x
-          git config --global user.email 'github-action@github.com'
-          git config --global user.name 'github-action@github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git fetch
+      # - name: setup merge
+      #   run: |
+      #     set -x
+      #     git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
 
       - name: set license
         run: |
@@ -47,16 +47,15 @@ jobs:
           copyright = "# Part of Zebroo GmbH. See LICENSE file for full copyright and licensing details (www.zebroo.de/license)."
 
           exceptions = list(map(lambda x: x.strip(), '${{ inputs.exceptions }}'.split(",")))
+          inc = list(map(lambda x: x.strip(), "${{ inputs.src_patterns }}".split(",")))
 
           for file in Path(".").rglob("*.py"):
               content = file.read_text()
               for test in exceptions:
                   if test in str(file):
                       continue
-              if "zbsync" not in str(file):
-                  continue
-              if "odoorpc_repo" in str(file):
-                  continue
+              if not any(x in str(file) for x in inc):
+                continue
 
               if file.name == "__manifest__.py":
                   content = eval(content)
@@ -73,10 +72,10 @@ jobs:
         run: |
           set -e
           changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
-          git config --global user.email "${username}"
-          git config --global user.name "${username}"
           if [[ "$changes" != "0" ]]; then
             git add .
+            git config user.email 'github-action@github.com'
+            git config user.name 'github-action@github.com'
             git commit -am 'code cleanup'
             git push
           fi
