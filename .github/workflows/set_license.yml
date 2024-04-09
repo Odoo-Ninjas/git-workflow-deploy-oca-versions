@@ -73,7 +73,7 @@ jobs:
 
       - name: if dirty files, commit them again (careful with recursion)
         run: |
-          set -e
+          set -ex
           changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
           if [[ "$changes" != "0" ]]; then
             git add .
