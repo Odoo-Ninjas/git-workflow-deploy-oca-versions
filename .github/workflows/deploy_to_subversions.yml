@@ -76,11 +76,3 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
-    # Trigger another workflow
-    - name: Trigger Another Workflow
-      uses: peter-evans/repository-dispatch@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        repository: Odoo-Ninjas/zebroo-sync
-        event-type: push
-        client-payload: '{"branch": "17.0"}'
