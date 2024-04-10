@@ -7,9 +7,9 @@ on:
       branches:
         required: true
         type: string
+    secrets:
       SSH_PRIVATE_KEY:
         required: true
-        type: string
 
 permissions: write-all
 
@@ -31,7 +31,7 @@ jobs:
     - name: setup ssh
       run: |
         mkdir ~/.ssh
-        echo "${{ sinputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
         chmod 500 ~/.ssh
         cat .git/config
