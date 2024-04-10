@@ -33,7 +33,7 @@ jobs:
 
     - name: setup ssh
       run: |
-        mkdir ~/.ssh
+        mkdir ~/.ssh || exit 0
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
         chmod 500 ~/.ssh
