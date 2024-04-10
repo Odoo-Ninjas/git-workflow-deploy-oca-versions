@@ -7,6 +7,9 @@ on:
       branches:
         required: true
         type: string
+      repo_url:
+        required: true
+        type: string
     secrets:
       SSH_PRIVATE_KEY:
         required: true
@@ -38,8 +41,10 @@ jobs:
 
     - name: setup default name / email
       run: |
+        username="github-action@github.com"
         git config --global user.email "${username}"
         git config --global user.name "${username}"
+        git remote set-url origin "${ inputs.repo_url }
     # - name: setup merge
     #   run: |
     #     set -x
