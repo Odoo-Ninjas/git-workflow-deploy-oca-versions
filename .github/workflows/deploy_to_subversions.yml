@@ -27,7 +27,6 @@ jobs:
 
     - name: setup merge
       run: |
-        set -x
         git config --global user.email 'github-action@github.com'
         git config --global user.name 'github-action@github.com'
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
@@ -36,7 +35,6 @@ jobs:
     - name: rebase specified branch to specified versions; if fails make issue
       run: |
         SRCBRANCH="${{ inputs.source_branch }}"
-        set -x
 
         for branch in ${{ inputs.branches }}; do
           echo "$branch" > /tmp/input1
