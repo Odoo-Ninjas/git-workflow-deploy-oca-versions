@@ -7,6 +7,9 @@ on:
       branches:
         required: true
         type: string
+      SSH_PRIVATE_KEY:
+        required: true
+        type: string
 
 permissions: write-all
 
@@ -21,20 +24,34 @@ jobs:
         fetch-depth: 0
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 
-    - name: setup merge
+    - name: setup ssh
       run: |
-        git config --global user.email 'github-action@github.com'
-        git config --global user.name 'github-action@github.com'
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-        git fetch
+        mkdir ~/.ssh
+        echo "${{ sinputs.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 400 ~/.ssh/id_rsa
+        chmod 500 ~/.ssh
+        cat .git/config
+
+    - name: setup default name / email
+      run: |
+        git config --global user.email "${username}"
+        git config --global user.name "${username}"
+    # - name: setup merge
+    #   run: |
+    #     set -x
+    #     git config --global user.email 'github-action@github.com'
+    #     git config --global user.name 'github-action@github.com'
+    #     git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+    #     git fetch
 
     - name: rebase specified branch to specified versions; if fails make issue
       run: |
         SRCBRANCH="${{ inputs.source_branch }}"
+        set -x
 
         for branch in ${{ inputs.branches }}; do
           echo "$branch" > /tmp/input1
@@ -73,6 +90,5 @@ jobs:
               -F -
           fi
         done
-      env:
-        GH_TOKEN: ${{ github.token }}
-
+      # env:
+      #   GH_TOKEN: ${{ github.token }}
