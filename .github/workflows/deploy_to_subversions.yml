@@ -60,7 +60,7 @@ jobs:
           git checkout "$DEST" -f
           git pull
           git log -n1
-          if $(git rebase "$SOURCE"); then
+          if $(git rebase --reapply-cherry-picks "$SOURCE"); then
             git push -f
             if [[ "$?" != "0" ]]; then
               cat .github/workflows/rebase.txt | gh issue create \
