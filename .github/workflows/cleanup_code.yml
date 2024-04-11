@@ -4,9 +4,6 @@ name: clean up code - remove breakpoints, blacking
 on:
   workflow_call:
     inputs:
-      branches:
-        required: true
-        type: string
 
 permissions: write-all
 
