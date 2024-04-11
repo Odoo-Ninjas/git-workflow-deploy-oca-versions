@@ -2,7 +2,7 @@
 name: clean up code - remove breakpoints, blacking
 
 on:
-  workflow_call:
+  workflow_call: {}
 
 permissions: write-all
 
