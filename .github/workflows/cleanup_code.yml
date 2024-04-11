@@ -34,7 +34,7 @@ jobs:
           git fetch
 
       - name: remove breakpoint() instructions
-        run:  |
+        run: |
           find . -type f -name "*.py" -exec sed -i '/breakpoint()/d' {} +
 
       - name: put exceptions to gitignore so not blacked
@@ -46,12 +46,12 @@ jobs:
           gitignore = Path(".gitignore")
 
           for exception in exception:
-            gitignore.write_text(gitignore.read_text() + "\n" exception)
+            gitignore.write_text(gitignore.read_text() + "\n" + exception)
 
       - uses: psf/black@stable
 
       - name: if dirty files, commit them again (careful with recursion)
-        run:  |
+        run: |
           set -e
           changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
           git config --global user.email "${username}"
