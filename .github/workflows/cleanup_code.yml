@@ -2,7 +2,11 @@
 name: clean up code - remove breakpoints, blacking
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      black_exceptions:
+        type: string
+        required: false
 
 permissions: write-all
 
@@ -33,6 +37,17 @@ jobs:
         run:  |
           find . -type f -name "*.py" -exec sed -i '/breakpoint()/d' {} +
 
+      - name: put exceptions to gitignore so not blacked
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          exceptions = list(map(lambda x: x.strip(), '${{ inputs.black_exceptions }}'.split(",")))
+          gitignore = Path(".gitignore")
+
+          for exception in exception:
+            gitignore.write_text(gitignore.read_text() + "\n" exception)
+
       - uses: psf/black@stable
 
       - name: if dirty files, commit them again (careful with recursion)
@@ -41,6 +56,9 @@ jobs:
           changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
           git config --global user.email "${username}"
           git config --global user.name "${username}"
+
+          git checkout -f .gitignore || true
+
           if [[ "$changes" != "0" ]]; then
             git add .
             git commit -am 'code cleanup'
