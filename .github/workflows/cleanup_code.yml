@@ -45,7 +45,7 @@ jobs:
           exceptions = list(map(lambda x: x.strip(), '${{ inputs.black_exceptions }}'.split(",")))
           gitignore = Path(".gitignore")
 
-          for exception in exception:
+          for exception in exceptions:
             gitignore.write_text(gitignore.read_text() + "\n" + exception)
 
       - uses: psf/black@stable
