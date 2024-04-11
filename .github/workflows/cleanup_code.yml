@@ -10,6 +10,9 @@ on:
 
 permissions: write-all
 
+env:
+  GIT_USERNAME: github-action@github.com
+
 jobs:
   build:
     runs-on: self-hosted
@@ -54,8 +57,8 @@ jobs:
         run: |
           set -e
           changes="$(git status --porcelain | python3 -c 'import sys; print(sum(1 for _ in sys.stdin))')"
-          git config --global user.email "${username}"
-          git config --global user.name "${username}"
+          git config --global user.email "${GIT_USERNAME}"
+          git config --global user.name "${GIT_USERNAME}"
 
           git checkout -f .gitignore || true
 
