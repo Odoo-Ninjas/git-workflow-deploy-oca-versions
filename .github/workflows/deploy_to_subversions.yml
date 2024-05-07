@@ -78,7 +78,10 @@ jobs:
           git log -n1
           git pull
 
-          git checkout "$DEST" -f
+          git checkout "$DEST" -f || {
+            git checkout -b "$DEST"
+            git push --set-upstream origin "$DEST"
+          }
           git pull
           git log -n1
           if $(git rebase --reapply-cherry-picks "$SOURCE"); then
