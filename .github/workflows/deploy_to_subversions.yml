@@ -86,10 +86,14 @@ jobs:
           git log -n1
           if $(git rebase --reapply-cherry-picks "$SOURCE"); then
             git push -f
+            subject="could not push to $SOURCE"
             if [[ "$?" != "0" ]]; then
-              cat .github/workflows/rebase.txt | gh issue create \
-                --title "could not push to $SOURCE " \
-                -F -
+              gh issue list --search "is:open '$subject'" | grep -q OPEN
+              if [[ "$?" != "0" ]]; then
+                cat .github/workflows/rebase.txt | gh issue create \
+                  --title "$subject" \
+                  -F -
+              fi
             fi
           else
             git rebase --abort || true
