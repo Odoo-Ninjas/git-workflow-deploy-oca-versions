@@ -52,7 +52,7 @@ jobs:
     - name: prepare rebase script
       shell: bash
       run: |
-        cat <<EOF > /tmp/rebase.sh
+        cat <<'EOF' > /tmp/rebase.sh
         #!/bin/bash
         set -ex
         SOURCE="$1"
