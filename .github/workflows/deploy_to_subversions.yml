@@ -49,33 +49,13 @@ jobs:
         git config --global user.name "${username}"
         git remote set-url origin "${{ inputs.repo_url }}"
 
-    # - name: setup merge
-    #   run: |
-    #     set -x
-    #     git config --global user.email 'github-action@github.com'
-    #     git config --global user.name 'github-action@github.com'
-    #     git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-    #     git fetch
-
-    - name: rebase specified branch to specified versions; if fails make issue
+    - name: prepare rebase script
+      shell: bash
       run: |
-        SRCBRANCH="${{ inputs.source_branch }}"
-        set -ex
-
-        for branch in ${{ inputs.branches }}; do
-          echo "$branch" > /tmp/input1
-          python3 <<END
-        import os
-        with open("/tmp/input1", "r") as f:
-          branch = f.read().strip()
-        dest, source = branch.split(":")
-        with open("/tmp/vars1", "w") as f:
-          f.write(f"export DEST='{dest}'")
-        with open("/tmp/vars2", "w") as f:
-          f.write(f"export SOURCE='{source}'")
-        END
-          source /tmp/vars1
-          source /tmp/vars2
+        cat <<EOF > /tmp/rebase.sh
+          #!/bin/bash
+          SOURCE="$1"
+          DEST="$2"
 
           git checkout "$SOURCE"
           git log -n1
@@ -105,6 +85,34 @@ jobs:
               --title "$SOURCE branch was updated - needs to deploy the changes to: $DEST " \
               -F -
           fi
-        done
+        EOF
       env:
         GH_TOKEN: ${{ github.token }}
+
+    - name: rebase specified branch to specified versions; if fails make issue
+      shell: python3
+      run: |
+        import os
+        import subprocess
+        import deepcopy
+
+        SRCBRANCH = "${{ inputs.source_branch }}"
+        branches = "${{ inputs.branches }}"
+
+        for area in branches.split(","):
+          area = area.strip()
+          error = False
+
+          for branch in area.split(" "); do
+          with open("/tmp/input1", "r") as f:
+            branch = f.read().strip()
+            dest, source = branch.split(":")
+
+            try:
+              env = deepcopy(os.environ)
+              env['GH_TOKEN'] = "${{ github.token }"
+              subprocess.check_call(["/bin/bash", "/tmp/rebase.sh", source, dest], env=env)
+            except:
+              error = True
+        if error:
+          raise Exception("Error during rebasing.")
