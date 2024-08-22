@@ -95,7 +95,7 @@ jobs:
         python3 <<EOF
         import os
         import subprocess
-        import deepcopy
+        from copy import deepcopy
 
         SRCBRANCH = "${{ inputs.source_branch }}"
         branches = "${{ inputs.branches }}"
