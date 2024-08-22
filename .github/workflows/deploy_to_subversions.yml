@@ -110,7 +110,7 @@ jobs:
 
             try:
               env = deepcopy(os.environ)
-              env['GH_TOKEN'] = "${{ github.token }"
+              env['GH_TOKEN'] = "${{ github.token }}"
               subprocess.check_call(["/bin/bash", "/tmp/rebase.sh", source, dest], env=env)
             except:
               error = True
