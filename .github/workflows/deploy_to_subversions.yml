@@ -6,7 +6,10 @@ on:
     inputs:
       branches:
         required: true
-        type: string
+        # is an array like:
+        # - '15.0:main'
+        # - '14.0:15.0'
+        
       repo_url:
         required: true
         type: string
@@ -57,7 +60,7 @@ jobs:
     - name: rebase specified branch to specified versions; if fails make issue
       run: |
         SRCBRANCH="${{ inputs.source_branch }}"
-        set -x
+        set -ex
 
         for branch in ${{ inputs.branches }}; do
           echo "$branch" > /tmp/input1
