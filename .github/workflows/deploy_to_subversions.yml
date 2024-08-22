@@ -53,41 +53,40 @@ jobs:
       shell: bash
       run: |
         cat <<EOF > /tmp/rebase.sh
-          #!/bin/bash
-          SOURCE="$1"
-          DEST="$2"
+        #!/bin/bash
+        set -ex
+        SOURCE="$1"
+        DEST="$2"
 
-          git checkout "$SOURCE"
-          git log -n1
-          git pull
+        git checkout "$SOURCE"
+        git log -n1
+        git pull
 
-          git checkout "$DEST" -f || {
-            git checkout -b "$DEST"
-            git push --set-upstream origin "$DEST"
-          }
-          git pull
-          git log -n1
-          if $(git rebase --reapply-cherry-picks "$SOURCE"); then
-            git push -f
-            subject="could not push to $SOURCE"
+        git checkout "$DEST" -f || {
+          git checkout -b "$DEST"
+          git push --set-upstream origin "$DEST"
+        }
+        git pull
+        git log -n1
+        if $(git rebase --reapply-cherry-picks "$SOURCE"); then
+          git push -f
+          subject="could not push to $SOURCE"
+          if [[ "$?" != "0" ]]; then
+            gh issue list --search "is:open '$subject'" | grep -q OPEN
             if [[ "$?" != "0" ]]; then
-              gh issue list --search "is:open '$subject'" | grep -q OPEN
-              if [[ "$?" != "0" ]]; then
-                cat .github/workflows/rebase.txt | gh issue create \
-                  --title "$subject" \
-                  -F -
-              fi
+              cat .github/workflows/rebase.txt | gh issue create \
+                --title "$subject" \
+                -F -
             fi
-          else
-            git rebase --abort || true
-
-            cat .github/workflows/rebase.txt | gh issue create \
-              --title "$SOURCE branch was updated - needs to deploy the changes to: $DEST " \
-              -F -
           fi
+        else
+          git rebase --abort || true
+
+          cat .github/workflows/rebase.txt | gh issue create \
+            --title "$SOURCE branch was updated - needs to deploy the changes to: $DEST " \
+            -F -
+        fi
         EOF
-      env:
-        GH_TOKEN: ${{ github.token }}
 
     - name: rebase specified branch to specified versions; if fails make issue
       shell: bash
