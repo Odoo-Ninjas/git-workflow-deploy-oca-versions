@@ -6,9 +6,9 @@ on:
     inputs:
       branches:
         required: true
+        type: string
         # is an array like:
-        # - '15.0:main'
-        # - '14.0:15.0'
+        # '15.0:main 16.0:main ||| 14.0:15.0'
         
       repo_url:
         required: true
@@ -99,14 +99,14 @@ jobs:
         SRCBRANCH = "${{ inputs.source_branch }}"
         branches = "${{ inputs.branches }}"
 
-        for area in branches.split(","):
+        for area in branches.split("|||"):
           area = area.strip()
           error = False
 
-          for branch in area.split(" "); do
-          with open("/tmp/input1", "r") as f:
-            branch = f.read().strip()
-            dest, source = branch.split(":")
+          for branch in area.split(" "):
+            dest, source = branch.strip().split(":")
+            dest = dest.strip()
+            source = source.strip()
 
             try:
               env = deepcopy(os.environ)
