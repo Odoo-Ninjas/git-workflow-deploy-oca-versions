@@ -90,8 +90,9 @@ jobs:
         GH_TOKEN: ${{ github.token }}
 
     - name: rebase specified branch to specified versions; if fails make issue
-      shell: python3
+      shell: bash
       run: |
+        python3 <<EOF
         import os
         import subprocess
         import deepcopy
@@ -116,3 +117,4 @@ jobs:
               error = True
         if error:
           raise Exception("Error during rebasing.")
+        EOF
