@@ -107,6 +107,7 @@ jobs:
             dest, source = branch.strip().split(":")
             dest = dest.strip()
             source = source.strip()
+            print(f"Source is: {source}, dest is: {dest}")
 
             try:
               env = deepcopy(os.environ)
