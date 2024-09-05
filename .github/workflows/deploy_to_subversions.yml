@@ -10,9 +10,6 @@ on:
         # is an array like:
         # '15.0:main 16.0:main ||| 14.0:15.0'
         
-      repo_url:
-        required: true
-        type: string
     secrets:
       SSH_PRIVATE_KEY:
         required: true
@@ -47,7 +44,7 @@ jobs:
         username="github-action@github.com"
         git config --global user.email "${username}"
         git config --global user.name "${username}"
-        git remote set-url origin "${{ inputs.repo_url }}"
+        git remote set-url origin "git@github.com:${{ github.repository }}.git"
 
     - name: prepare rebase script
       shell: bash
